@@ -1,0 +1,33 @@
+name: Deploy FastAPI App to Azure Web App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout GitHub Repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Login to Azure using Service Principal
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3️⃣ Build Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t spam-detector-api .
+
+      # 4️⃣ Push image to Azure Web App (Linux container)
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-container-deploy@v2
+        with:
+          app-name: spam-detector-api           # Your Azure Web App name
+          images: spam-detector-api:latest
