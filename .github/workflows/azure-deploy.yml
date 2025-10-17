@@ -1,0 +1,32 @@
+name: Deploy FastAPI App to Azure Web App
+
+on:
+  push:
+    branches:
+      - main  # Workflow triggers when code is pushed to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ Checkout repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2️⃣ Login to Azure
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 3️⃣ Build Docker image
+    - name: Build Docker image
+      run: docker build -t spam-detector-api .
+
+    # 4️⃣ Push Docker image and Deploy to Azure Web App
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: spam-detector-api
+        images: spam-detector-api
