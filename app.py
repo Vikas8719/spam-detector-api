@@ -40,3 +40,5 @@ if st.button("🔍 Check Spam"):
 
 # Footer
 st.caption("Built with ❤️ using Streamlit and Scikit-learn")
+print("Force rebuild")
+
